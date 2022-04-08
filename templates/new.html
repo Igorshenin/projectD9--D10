@@ -1,0 +1,30 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+
+{% extends 'default.html' %}
+
+ {% load custom_filters %}.
+
+<!-- Название у нас будет news -->
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим новость, ID которого было передано в адрес -->
+{% block content %}
+<h1>{{ post }}</h1>
+ <table>
+            <tr>
+                <td>
+                   <b> Контент </b>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    {{post.text|censor}}
+                </td>
+
+            </tr>
+ </table>
+<h6> новость от {{ post.created|date:"d.m.Y H:i" }} </h6>
+{% endblock content %}

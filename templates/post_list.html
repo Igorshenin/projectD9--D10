@@ -1,0 +1,64 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'default.html' %}
+
+<!-- Название у нас будет products -->
+{% block title %}
+Post
+{% endblock title %}
+
+
+
+{% block content %}
+<form method="GET">
+    {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
+
+    <h1>Все новости (всего - {{news|length}})</h1>
+    <hr>
+    {% if news %} <!-- Если есть товары, то выводим таблицу с ними -->
+        <table>
+            <tr>
+                <td>
+                   <b> Заголовок </b>
+                </td>
+                <td>
+                   <b> Дата публикации </b>
+                </td>
+                <td>
+                    <b>Текст статьи</b>
+                </td>
+            </tr>
+        {% for new in filter.qs %}
+            <tr>
+                        <td>
+            <a href="{% url 'new_detail' new.id %}">{{ new.title }}</a> <!-- При нажатии на имя товара в таблице нас теперь будет перекидывать на страницу с самого товара -->
+            <a href="{% url 'new_update' new.id %}"><u> Редактировать </u></a>
+            <a href="{% url 'new_delete' new.id %}"><u> Удалить </u></a>
+        </td>
+                <td>
+                    {{ new.title }}
+                </td>
+                <td>
+                    {{ new.created|date:"d.m.Y" }}
+                </td>
+                <td>
+                    {{ new.text|truncatechars:50 }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}
+
+    {% if is_paginated %}
+  {% block pagination %}
+    {% include 'include/_pagination.html' %}
+  {% endblock pagination %}
+    {% endif %}
+
+
+{% endblock content %}
+

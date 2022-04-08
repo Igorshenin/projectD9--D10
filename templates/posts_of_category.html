@@ -1,0 +1,57 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+{% block title %}
+Все новости {% if cats %}в категории {{ name_category }}{% endif %}
+{% endblock title %}
+
+{% block style %}
+<style>
+   .card {
+    transition: .1s; /* Время эффекта */
+   }
+   .card:hover {
+    transform: scale(1.008);
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   }
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 class="text-center">Все статьи в категории {{ name_category}} ({{ count_post }})</h1>
+<div class="text-center">
+  <form action="{% url 'subscribe' %}" method="POST">
+    {% csrf_token %}
+  <button type="submit" value="{{ pk }}" name="pk" class="btn btn-light btn-outline-primary">{% if is_not_subscriber %}Подписаться!{% else %}Отписаться!{% endif %}</button>
+  </form>
+</div>
+{% if posts %}
+<div class="card-group text-left">
+  {% for post in posts %}
+ <div class="col-12 col-md-6 col-lg-4 col-xl-3 p-2 text-center">
+    <div class="card h-100" >
+      {{ post.title|censor }}">
+      <div class="card-body">
+        <p class="card-text"><small class="text-muted">Автор: {{ post.author }}</small></p>
+        <h5 class="card-title"><a href="{{ post.get_absolute_url }}" class="text-dark text-decoration-none stretched-link">{{ post.title|censor }}</a></h5>
+        <p class="card-text">{{ post.text|censor|truncatechars:150 }}</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Добавлено: {{ post.created|date:'d-M-Y H:i'  }}</small>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+  {% else %}
+    <div class="alert alert-primary" role="alert">
+      Пока еще нет ни одной новости в категории {{ category }}
+    </div>
+  {% endif %}
+
+    {% if is_paginated %}
+  {% block pagination %}
+    {% include 'include/_pagination.html' %}
+  {% endblock pagination %}
+    {% endif %}
+{% endblock content %}

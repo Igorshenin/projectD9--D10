@@ -1,0 +1,12 @@
+{% extends 'default.html' %}
+
+{% block title %} Новая новость {% endblock title %}
+
+{% block content %}
+<h3>Создание новости</h3>
+<form method="POST">
+    {% csrf_token %}
+    {{ form }} <!-- Теперь нам нужна только готовая форма и кнопка -->
+    <input type="submit" value="Добавить новость">
+</form>
+{% endblock content %}

@@ -1,0 +1,28 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'default.html' %}
+
+ {% load custom_filters %}.
+
+<!-- Название у нас будет news -->
+{% block title %}
+{{post.title}}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим новость, ID которого было передано в адрес -->
+{% block content %}
+<div class="alert alert-danger mt-2" role="alert">
+  Вы действительно хотите удалить новость?
+  <form method="POST" class="d-inline-block ms-1">
+    {% csrf_token %}
+    <input type="submit" value="ДА!" class="btn btn-danger">
+    <a href="{% url 'new_delete' post.id %}" class="btn btn-secondary">НЕТ!</a>
+</form>
+</div>
+
+<hr>
+<h2 class="text-center mt-2">{{ post.title }}</h2>
+<h6 class="text-center">Создано: {{ post.created|date:"d.m.Y"  }}</h6>
+<h6 class="text-center"><small class="text-muted">Автор: {{ post.author }}</small></h6>
+<h6 class="text-center"><small class="text-muted">Контент:</small></h6>
+<p> {{ post.text|censor}}</p>
+{% endblock content %}
